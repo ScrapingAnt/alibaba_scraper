@@ -12,11 +12,12 @@ docker build -t alibaba_scraper . && docker run -it -v ${PWD}/data:/app/data ali
 #### Without Docker
 This code was written for python 3.7+
 ```shell script
-$ git clone https://github.com/ScrapingAnt/alibaba_scraper.git
-$ cd alibaba_scraper
-$ pip install -r requirements.txt
-$ python main.py --help
-$ python main.py adidas --rapidapi_key <RAPID_API_KEY> --email_format first_last
+git clone https://github.com/ScrapingAnt/alibaba_scraper.git
+cd alibaba_scraper
+python3 -m venv .env
+.env/bin/pip install -r requirements.txt
+.env/bin/python main.py --help
+.env/bin/python main.py adidas --rapidapi_key <RAPID_API_KEY>
 ```
 
 #### Sample output:
