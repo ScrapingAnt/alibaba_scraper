@@ -3,6 +3,7 @@ import json
 import base64
 import urllib.parse
 from datetime import datetime
+from pathlib import Path
 
 import requests
 from bs4 import BeautifulSoup
@@ -95,6 +96,7 @@ def main(search_string, rapidapi_key):
     if results:
         header = ['item_url', 'listing_title', 'seller_name', 'store_url', 'price', 'image_url', 'seller_location']
         filename = f'data/{search_string}_{datetime.now()}.csv'
+        Path("data/").mkdir(parents=True, exist_ok=True)
         with open(filename, "w", newline="") as f:
             cw = csv.DictWriter(f, header, delimiter='\t', quotechar='|', quoting=csv.QUOTE_MINIMAL)
             cw.writeheader()
