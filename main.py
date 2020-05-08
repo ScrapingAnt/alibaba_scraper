@@ -35,7 +35,7 @@ def extract_data_from_html(page_html):
     items_elements = soup.find_all(attrs={'data-role': 'item'})
     items_data_list = []
     for item_element in items_elements:
-        title_element = item_element.find(attrs={'class': 'organic-gallery-title__content'})
+        title_element = item_element.find(attrs={'class': ['organic-gallery-title__content', 'ic-offer__title-text']})
         if not title_element:
             continue
         item_data = {'listing_title': title_element.getText()}
@@ -46,13 +46,13 @@ def extract_data_from_html(page_html):
         seller_country_element = item_element.find(attrs={'class': 'seller-tag__country'})
         if seller_country_element:
             item_data['seller_location'] = seller_country_element['title']
-        image_element = item_element.find(attrs={'class': 'J-img-switcher-item'})
+        image_element = item_element.find(attrs={"flasher-type": "mainImage"})
         if image_element:
-            item_data['image_url'] = image_element['src'][2:]
-        price_element = item_element.find(attrs={'class': 'gallery-offer-price'})
+            item_data['image_url'] = image_element['data-image'][2:]
+        price_element = item_element.find(attrs={'class': ['gallery-offer-price', 'ic-offer-price']})
         if price_element:
             item_data['price'] = price_element.getText()
-        link_element = item_element.find(attrs={'class': 'organic-gallery-title'})
+        link_element = item_element.find(attrs={'class': ['organic-gallery-title', 'ic-offer__title-link-wrapper']})
         if link_element:
             item_data['item_url'] = link_element['href'][2:]
         items_data_list.append(item_data)
@@ -73,12 +73,12 @@ def extract_items_from_url(url_string, rapidapi_key):
     return data
 
 
-def get_search_results(search_string, rapidapi_key):
+def get_search_results(search_string, rapidapi_key, pages):
     search_params = urllib.parse.urlencode({'SearchText': search_string})
     search_url = f'https://www.alibaba.com/trade/search?{search_params}'
     items_list = extract_items_from_url(search_url, rapidapi_key)
     if items_list:
-        for page in range(2, 10):
+        for page in range(2, pages + 1):
             page_url = f'{search_url}&page={page}'
             new_items = extract_items_from_url(page_url, rapidapi_key)
             if not new_items:
@@ -91,8 +91,9 @@ def get_search_results(search_string, rapidapi_key):
 @click.argument('search_string', type=str, required=True, )
 @click.option("--rapidapi_key", type=str, required=True,
               help="Api key from https://rapidapi.com/okami4kak/api/scrapingant")
-def main(search_string, rapidapi_key):
-    results = get_search_results(search_string, rapidapi_key)
+@click.option("--pages", type=int, default=2, help="number of search pages to parse")
+def main(search_string, rapidapi_key, pages):
+    results = get_search_results(search_string, rapidapi_key, pages)
     if results:
         header = ['item_url', 'listing_title', 'seller_name', 'store_url', 'price', 'image_url', 'seller_location']
         filename = f'data/{search_string}_{datetime.now()}.csv'
