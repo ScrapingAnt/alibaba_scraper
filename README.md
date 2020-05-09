@@ -19,7 +19,19 @@ python3 -m venv .env
 .env/bin/python main.py --help
 .env/bin/python main.py adidas --rapidapi_key <RAPID_API_KEY>
 ```
+#### Available params
+```
+.env/bin/python python main.py --help
 
+Usage: main.py [OPTIONS] SEARCH_STRING
+
+Options:
+  --rapidapi_key TEXT             Api key from https://rapidapi.com/okami4kak/api/scrapingant  [required]
+  --pages INTEGER                 Number of search pages to parse
+  --country [ae|br|cn|de|es|fr|gb|hk|in|it|il|jp|nl|ru|sa|us]
+                                  Country of proxies location
+  --help                          Show this message and exit.
+```
 #### Sample output:
 Output is saved to data/ directory in csv format.
 ![](result_example.png)
